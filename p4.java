@@ -106,29 +106,49 @@ class EInteger extends Element
 	public static int getCount() { return count; }
 }
 
+class Plus
+{
+	//static methods because we will call plus() without creating
+	//any Plus objects (only made the class to work with Elements)
+	public static Element plus(EBoolean a, EBoolean b) 
+	{ 
+		int num = (a.value || b.value) ? 1 : 0;  //true=1, false=0
+		EBoolean c = new EBoolean(num);
+		return c; 
+	}
+
+	public static Element plus(EInteger a, EInteger b) 
+	{ 
+		EInteger c = new EInteger(a.value + b.value);
+		return c; 
+	}
+
+	public static Element plus(EString a, EString b) 
+	{
+		EString c = new EString(a.value + b.value);
+		return c; 
+	}
+
+	
+
+}
+
 public class p4
 {
 	public static void main(String[] args) 
 	{
-		EString a = new EString("happybirthday45678901234567");
-		//testing if estring's string gets truncated to 24 letters max
-		// System.out.println( a.getString() );	
-		// System.out.println( a.hash() );  //test EString hash func
-
-		EBoolean b = new EBoolean(1);
-		//testing eboolean's toString() func
-		// System.out.println(b.toString());
-		// System.out.println( b.hash() );   //test hash func of EBoolean
-
+		EString a = new EString("happyb");
+		EBoolean b = new EBoolean(1);     //true
+		EBoolean z = new EBoolean(0);     //false
 		EInteger c = new EInteger(50);
-		//testing EInteger's toString method
-		// System.out.println(c.toString());
-		// System.out.println( c.hash() );		//test hash func of EInteger
+		
+		Element d = Plus.plus(a, a);      //should get "happybhappyb"
+		System.out.println("estring+estring:  " + d);
 
-		//test getCount
-		System.out.println("Number of elements: " + Element.getCount() );
-		System.out.println("Number of estrings: " + a.getCount() );
-		System.out.println("Number of ebooleans: " + b.getCount() );
-		System.out.println("Number of eintegers: " + c.getCount() );
+		Element e = Plus.plus(b, z);      //should get true || false == true
+		System.out.println("ebool+ebool:  " + e);
+
+		Element f = Plus.plus(c, c);      //should get 50+50==100
+		System.out.println("eint+eint:  " + f);	
 	}
 }
