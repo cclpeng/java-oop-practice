@@ -9,6 +9,7 @@ private
 abstract class Element 
 {
 	static int count = 0;
+	int value;
 	public Element(){ count++; }
 	public abstract int hash(); //"abstract" means the func can't have ANY
 	//	implementation. no hash() {return 0; }
@@ -110,70 +111,69 @@ class Plus
 {
 	//static methods because we will call plus() without creating
 	//any Plus objects (only made the class to work with Elements)
-	public static Element plus(EBoolean a, EBoolean b) 
-	{ 
-		int num = (a.value || b.value) ? 1 : 0;  //true=1, false=0
-		EBoolean c = new EBoolean(num);
-		return c; 
-	}
 
-	public static Element plus(EInteger a, EInteger b) 
-	{ 							//We can only access a.value in Plus
-								//because Element items are Protected
-		EInteger c = new EInteger(a.value + b.value);
-		return c; 
-	}
 
-	public static Element plus(EString a, EString b) 
+	public static Element plus(Element a, Element b)
 	{
-		EString c = new EString(a.value + b.value);
-		return c; 
-	}
+		Element c;
+		if(a instanceof EString)
+		{
+			EString d = (EString) a;
+			c = new EString(d.value + b.toString());
+		} // if
 
-	public static Element plus(EBoolean a, EInteger b) 
-	{
-		int temp = b.value;
-		if(a.value) //a is true
-			temp++;
-		EInteger sum = new EInteger(temp);
-		return sum;
-	}
+		else if(a instanceof EInteger)
+		{	
+			EInteger intA = (EInteger)a;
 
-	public static Element plus(EBoolean a, EString b) 
-	{
-		String sum = a.toString() + b.value;
-		EString c = new EString(sum);
+			if (b instanceof EBoolean)
+			{
+				EBoolean boolB = (EBoolean) b;
+				int temp = boolB.value ? intA.value+1 : intA.value;
+				c = new EInteger(temp);
+			}
+
+			else if (b instanceof EInteger)
+			{	
+				EInteger intB = (EInteger)b;
+				c = new EInteger(intA.value + intB.value);
+			}
+
+			else //b instanceof EString
+			{
+				EString strB = (EString)b; 
+				c = new EString(intA.toString() + strB.value);
+			}
+		} // else if
+
+		else //a instanceof EBoolean
+		{
+			EBoolean boolA = (EBoolean) a;
+
+			if(b instanceof EBoolean)
+			{
+				EBoolean boolB = (EBoolean) b;
+				int num = (boolA.value || boolB.value) ? 1 : 0;  //true=1, false=0
+				c = new EBoolean(num);
+			}
+
+			else if(b instanceof EInteger)
+			{
+				EInteger intB = (EInteger) b;
+				int temp = boolA.value ? intB.value+1 : intB.value;
+				c = new EInteger(temp);
+			}
+
+			else //b instanceof EString
+			{
+				EString strB = (EString) b;
+				c = new EString(a.toString() + strB.value);
+			}
+		} // else
+
 		return c;
-	}
-
-	public static Element plus(EInteger a, EBoolean b) 
-	{
-		int temp = a.value;
-		if(b.value)   //if b is true
-			temp++;
-		EInteger c = new EInteger(temp);
-		return c;
-	}
-
-	public static Element plus(EInteger a, EString b) 
-	{
-		String sum = a.toString() + b.value;
-		EString c = new EString(sum);
-		return c;
-	}
-
-	public static Element plus(EString a, EBoolean b) 
-	{
-		EString c = new EString(a.value + b.toString());
-		return c;
-	}
-
-	public static Element plus(EString a, EInteger b) 
-	{
-		EString c = new EString(a.value + b.toString());
-		return c;
-	}
-}
+	} // plus()
+} // Plus class
 
 public class p4
 {
@@ -184,15 +184,24 @@ public class p4
 		EBoolean z = new EBoolean(0);     //false
 		EInteger c = new EInteger(50);
 		
-		//Notice it is Element d NOT EString d (compiler will say wrong type)
+		Element d = Plus.plus(a, b);  //string bool
+		Element e = Plus.plus(a, c);  //string int
+		Element f = Plus.plus(z, a);  //bool string
+		Element g = Plus.plus(z, c);  //bool int
+		Element h = Plus.plus(c, a);  //int string
+		Element i = Plus.plus(c, b);  //int bool
+		System.out.println(d);
+		System.out.println(e);
+		System.out.println(f);
+		System.out.println(g);
+		System.out.println(h);
+		System.out.println(i);
 
-		Element d = Plus.plus(a, a);      //should get "happybhappyb"
-		System.out.println("estring+estring:  " + d);
-
-		Element e = Plus.plus(b, z);      //should get true || false == true
-		System.out.println("ebool+ebool:  " + e);
-
-		Element f = Plus.plus(c, c);      //should get 50+50==100
-		System.out.println("eint+eint:  " + f);	
+		Element j = Plus.plus(a, a);  //string string
+		Element k = Plus.plus(b, b);  //bool bool
+		Element l = Plus.plus(c, c);  //int int
+		System.out.println(j);
+		System.out.println(k);
+		System.out.println(l);
 	}
 }
