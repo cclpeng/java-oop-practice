@@ -6,15 +6,10 @@ Otherwise you can just do a bunch of class A{}, class B{}, they will just be
 private
 */
 
-/*
-part 0 overriding the built in toString function for each class (polymorphism)
-part 1 adding an abstract method to abstract class and implementing in 
-	   each inherited class
-*/
-
 abstract class Element 
 {
-	public Element(){}
+	static int count = 0;
+	public Element(){ count++; }
 	public abstract int hash(); //"abstract" means the func can't have ANY
 	//	implementation. no hash() {return 0; }
 
@@ -26,19 +21,25 @@ abstract class Element
 		else
 			return i;
 	} // absvalue()
+
+	public static int getCount() { return count; }
 }
 
 class EBoolean extends Element
 {
+	static int count = 0; //can only have 1 count within this class
 	protected boolean value;
 
 	public EBoolean(int v)
 	{ 
+		count++;
 		if(v == 0) 
 			value = false; 
 		else 
 			value = true; 
 	}// constructor EBoolean()
+
+	public static int getCount() { return count; }
 
 	@Override       // @Override is just a tag, reminds us we overrode it
 	public String toString()
@@ -61,19 +62,22 @@ class EBoolean extends Element
 
 class EString extends Element
 {
+	static int count = 0;
 	protected String value;			//String is part of standard library...dont 
 							//need to import anything new above
 	
 	// in java, dont need stringcpy, assignment by = sign
 	public EString(String v) 
 	{ 
+		count++;
 		if(v.length() > 24)	
 			v = v.substring(0, 23);  //trim string if length > 24
 		value = v; 
 	} 
 
 	protected String getString() { return value; } //protected works...
-	
+	public static int getCount() { return count; }
+
 	@Override
 	public String toString() { return value; }
 	
@@ -84,8 +88,13 @@ class EString extends Element
 
 class EInteger extends Element
 {
+	static int count = 0;
 	protected int value;
-	public EInteger(int v) { value = v; }
+	public EInteger(int v) 
+	{ 
+		count++;
+		value = v; 
+	}
 
 	@Override
 	// public String toString() { return "" + value; }    OR
@@ -93,6 +102,8 @@ class EInteger extends Element
 
 	@Override 
 	public int hash() { return absvalue(value) % 17; }
+
+	public static int getCount() { return count; }
 }
 
 public class p4
@@ -102,16 +113,22 @@ public class p4
 		EString a = new EString("happybirthday45678901234567");
 		//testing if estring's string gets truncated to 24 letters max
 		// System.out.println( a.getString() );	
-		System.out.println( a.hash() );  //test EString hash func
+		// System.out.println( a.hash() );  //test EString hash func
 
 		EBoolean b = new EBoolean(1);
 		//testing eboolean's toString() func
 		// System.out.println(b.toString());
-		System.out.println( b.hash() );   //test hash func of EBoolean
+		// System.out.println( b.hash() );   //test hash func of EBoolean
 
 		EInteger c = new EInteger(50);
 		//testing EInteger's toString method
 		// System.out.println(c.toString());
-		System.out.println( c.hash() );		//test hash func of EInteger
+		// System.out.println( c.hash() );		//test hash func of EInteger
+
+		//test getCount
+		System.out.println("Number of elements: " + Element.getCount() );
+		System.out.println("Number of estrings: " + a.getCount() );
+		System.out.println("Number of ebooleans: " + b.getCount() );
+		System.out.println("Number of eintegers: " + c.getCount() );
 	}
 }
