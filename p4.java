@@ -118,7 +118,8 @@ class Plus
 	}
 
 	public static Element plus(EInteger a, EInteger b) 
-	{ 
+	{ 							//We can only access a.value in Plus
+								//because Element items are Protected
 		EInteger c = new EInteger(a.value + b.value);
 		return c; 
 	}
@@ -129,8 +130,49 @@ class Plus
 		return c; 
 	}
 
-	
+	public static Element plus(EBoolean a, EInteger b) 
+	{
+		int temp = b.value;
+		if(a.value) //a is true
+			temp++;
+		EInteger sum = new EInteger(temp);
+		return sum;
+	}
 
+	public static Element plus(EBoolean a, EString b) 
+	{
+		String sum = a.toString() + b.value;
+		EString c = new EString(sum);
+		return c;
+	}
+
+	public static Element plus(EInteger a, EBoolean b) 
+	{
+		int temp = a.value;
+		if(b.value)   //if b is true
+			temp++;
+		EInteger c = new EInteger(temp);
+		return c;
+	}
+
+	public static Element plus(EInteger a, EString b) 
+	{
+		String sum = a.toString() + b.value;
+		EString c = new EString(sum);
+		return c;
+	}
+
+	public static Element plus(EString a, EBoolean b) 
+	{
+		EString c = new EString(a.value + b.toString());
+		return c;
+	}
+
+	public static Element plus(EString a, EInteger b) 
+	{
+		EString c = new EString(a.value + b.toString());
+		return c;
+	}
 }
 
 public class p4
@@ -142,6 +184,8 @@ public class p4
 		EBoolean z = new EBoolean(0);     //false
 		EInteger c = new EInteger(50);
 		
+		//Notice it is Element d NOT EString d (compiler will say wrong type)
+
 		Element d = Plus.plus(a, a);      //should get "happybhappyb"
 		System.out.println("estring+estring:  " + d);
 
